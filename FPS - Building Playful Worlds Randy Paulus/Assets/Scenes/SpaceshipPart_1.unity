@@ -4900,7 +4900,7 @@ MonoBehaviour:
     name: Glock
     damage: 10
     range: 100
-    fireRate: 0.05
+    fireRate: 0.2
     nextShot: 0
   force: 3
   enemyHealth: {fileID: 0}
@@ -4998,7 +4998,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1f527d550eb291845b298c952787b0d9, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 893c19ec199fa9a4c912832992fe5810, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
