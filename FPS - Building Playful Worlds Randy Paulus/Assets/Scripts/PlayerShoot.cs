@@ -5,14 +5,15 @@ using UnityEngine;
 public class PlayerShoot : MonoBehaviour {
 
 	public PlayerWeapon weapon;
-	public float force = 3.0f;
 	public EnemyHealth enemyHealth;
+	public Rigidbody rb;
 
 	[SerializeField]
 	private Camera cam;
 
 	[SerializeField]
 	private LayerMask mask;
+
 
 	void Start (){
 
@@ -21,6 +22,7 @@ public class PlayerShoot : MonoBehaviour {
 			Debug.LogError("PlayerShoot: No camera referenced!");
 			this.enabled = false;
 		}
+
 
 	}
 
@@ -37,7 +39,7 @@ public class PlayerShoot : MonoBehaviour {
 		AudioSource shotSound = GetComponent<AudioSource>();
 		shotSound.Play ();
 		weapon.nextShot = Time.time + weapon.fireRate;
-		Debug.Log("You shot");
+		//Debug.Log("You shot");
 
 		//Shoots and check hit collider with Raycasting
 		RaycastHit hit;
@@ -47,19 +49,23 @@ public class PlayerShoot : MonoBehaviour {
 
 				//Find EnemyHealth script in gameobject hit.
 				enemyHealth = hit.collider.GetComponent <EnemyHealth> ();
+				rb = hit.collider.GetComponent<Rigidbody> ();
+
+				rb.AddForce(Vector3.forward * -weapon.knockbackForce, ForceMode.Impulse);
+				//Debug.Log ("Force is being Applied!");
 
 				//If exists...
 				if (enemyHealth != null) {
 
 					//...enemy takes damage. 
-					enemyHealth.TakeDamage (weapon.damage);
-					Debug.Log ("You hit for: " + weapon.damage);
-					Debug.Log ("Health Left: " + enemyHealth.currHP);
+					enemyHealth.TakeDamage (weapon.GetRandomDamage());
+					Debug.Log ("You hit for: " + weapon.GetRandomDamage());
+					//Debug.Log ("Health Left: " + enemyHealth.currHP);
 				}
 			} 
 
 		//Debugs
-		Debug.Log ("You hit " + hit.collider.name);
+		//Debug.Log ("You hit " + hit.collider.name);
 		Debug.DrawRay (cam.transform.position, cam.transform.forward * weapon.range, Color.green, 5.0f);
 		}
 	}

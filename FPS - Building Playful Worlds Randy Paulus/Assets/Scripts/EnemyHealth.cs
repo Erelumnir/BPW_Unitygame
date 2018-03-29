@@ -8,12 +8,12 @@ public class EnemyHealth : MonoBehaviour {
 	//Sets variables
 	public int startHP = 100;
 	public int currHP;
-	public float sinkSpeed = 2.5f;
 	private Image HealthBar2; 
 
-	bool isDead;
-	bool isSinking;
+	public bool isDead = false;
+	public bool isSinking;
 	PlayerWeapon weapon;
+	EnemyController EC;
 
 	void Start(){
 		//Find and assign Healthbar sprite to variable.
@@ -28,12 +28,7 @@ public class EnemyHealth : MonoBehaviour {
 	}
 
 	void Update(){
-	
-		//If the enemy should be sinking...
-		if(isSinking){
-			//...move the enemy down by the sinkSpeed per second.
-			transform.Translate (-Vector3.up *sinkSpeed * Time.deltaTime);
-		}
+
 	}
 
 	//void OnGUI (){
@@ -61,17 +56,17 @@ public class EnemyHealth : MonoBehaviour {
 			if (currHP <= 0) {
 				//...enemy dies.
 				Death ();
-				Debug.Log ("You Killed" + this.gameObject.name);
+				Debug.Log ("You Killed " + this.gameObject.name);
 			}
 		}
 	}
 
 	void Death(){
-	
+
 		//Enemy died.
 		isDead = true;
-		Destroy(gameObject);
-		Debug.Log("Enemy Killed");
 		isSinking = true;
+		//Debug.Log("Enemy Killed");
+
 	}
 }

@@ -9,12 +9,12 @@ public class camMouseLook : MonoBehaviour {
 	Vector2 mouseLook;
 	Vector2 smoothV;
 
-	GameObject PlayerCapsule;
+	GameObject targetCapsule;
 
 	// Use this for initialization
 	void Start () {
 		
-		PlayerCapsule = this.transform.parent.gameObject;	
+		targetCapsule = this.transform.parent.gameObject;	
 	}
 	
 	// Update is called once per frame
@@ -32,9 +32,9 @@ public class camMouseLook : MonoBehaviour {
 		//Clamps mouse rotation to prevent overrotation.
 		mouseLook.y = Mathf.Clamp (mouseLook.y, -90f, 90f);
 
-		//Player and camera follow cursor
+		//target and camera follow cursor
 		transform.localRotation = Quaternion.AngleAxis(-mouseLook.y, Vector3.right);
-		PlayerCapsule.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, PlayerCapsule.transform.up);
+		targetCapsule.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, targetCapsule.transform.up);
 	}
 
 
