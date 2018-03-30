@@ -8,6 +8,7 @@ TagManager:
   - Environment
   - HP
   - AudioManager
+  - PickUp
   layers:
   - Default
   - TransparentFX

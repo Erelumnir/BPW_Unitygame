@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class PcController : MonoBehaviour {
 
 	// Creates the variables
+	PlayerHealth playerHP;
+
 	public float forwardMoveSpeed = 1f;
 	public float sidewaysMoveSpeed = 1f;
 
@@ -13,12 +15,25 @@ public class PcController : MonoBehaviour {
 	public GameObject inGameMenu;
 	public camMouseLook camLook;
 
+	private Rigidbody rb;
+
 	// Runs at start
 	void Start (){
 		// Hides and Locks cursor on start
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 		menuOpen = false;
+		rb = GetComponent<Rigidbody>();
+		playerHP = GetComponent<PlayerHealth> ();
+	}
+
+	void OnTriggerEnter(Collider other) 
+	{
+		if (other.gameObject.CompareTag ("PickUp"))
+		{
+			other.gameObject.SetActive (false);
+			playerHP.currHP += 10;
+		}
 	}
 
 	//############################################## MENU ###############################################

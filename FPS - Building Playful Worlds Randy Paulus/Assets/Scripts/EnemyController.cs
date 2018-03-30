@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum State { Idle, Patrol, Follow, Attack, Dead }
+public enum State { Idle, Follow, Attack, Dead }
 
 public class EnemyController : MonoBehaviour {
 
@@ -12,23 +12,16 @@ public class EnemyController : MonoBehaviour {
 	public EnemyHealth enemyHealth;
 	public PlayerHealth playerHP;
 	public State currentState;
-	public Transform[] points;
-	public Transform[] spawnPoints;
 
-	private int destPoint = 0;
 	private GameObject player;
 	private NavMeshAgent agent;
 	private float distanceToTarget;
 
 	// Use this for initialization
 	void Start () {
-		enemy.enemyGO = 
 		player = GameObject.FindWithTag ("Player");
 		agent = GetComponent<NavMeshAgent> ();
 		playerHP = GameObject.FindWithTag ("Player").GetComponent<PlayerHealth> ();
-
-		//Spawns enemies with delay
-		InvokeRepeating ("Spawn", enemy.spawnTime, enemy.spawnRate);
 	}
 
 	// Update is called once per frame
@@ -38,23 +31,6 @@ public class EnemyController : MonoBehaviour {
 		CheckState ();
 
 	}
-	void Spawn(){
-		// Spawns enemies after spawntimer and everytime when spawntimer
-
-		// If the player has no health left...
-		if(playerHP.currHP <= 0f)
-		{
-			// ... exit the function.
-			return;
-		}
-
-		// Find a random index between zero and one less than the number of spawn points.
-		int spawnPointIndex = Random.Range (0, spawnPoints.Length);
-
-		// Create an instance of the enemy prefab at the randomly selected spawn point's position and rotation.
-		Instantiate (enemy.enemyGO, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-	}
-	//########################################################## AI ################################################################
 
 	void CheckState(){
 		// If player has been flagged as dead...
@@ -66,7 +42,7 @@ public class EnemyController : MonoBehaviour {
 		// If player isn't in range...
 		if (player == null) {
 			// set state to patrol
-			currentState = State.Patrol;
+			currentState = State.Idle;
 		}
 
 		// Distance between this enemy and player
@@ -97,37 +73,15 @@ public class EnemyController : MonoBehaviour {
 			// If player moves out of look radius...
 			else if(distanceToTarget > enemy.lookRadius){
 				// ...set state to Patrol
-				currentState = State.Patrol;
+				currentState = State.Idle;
 			}
 			break;
 
 		case State.Idle:
-			// If player is in look radius...
-			if(distanceToTarget < enemy.lookRadius){
-				// ...set state to follow
-				currentState = State.Follow;
-			}
-			break;
+			// Enemy wanders in small area
+			//a gent.SetDestination(transform.position + new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10)));
 
-		case State.Patrol:
-			// Set agent move speed to patrol speed
-			agent.speed = 0.5f;
-
-			// Choose next destination point when nearing current one
-			if (!agent.pathPending && agent.remainingDistance < 0.1f) {
-
-				// If there aren't any patrol points...
-				if (points.Length == 0) {
-					return;
-				}
-
-				// Set agent to go to the currently selected destination
-				agent.destination = points [destPoint].position;
-
-				// Choose next point in array as destination, cycle back to start if necessary
-				destPoint = (destPoint + 1) % points.Length;
-			}
-
+			agent.SetDestination(RandomNavSphere(this.transform.position, 10f, -1));
 			// If player is in look radius...
 			if(distanceToTarget < enemy.lookRadius){
 				// ...set state to follow
@@ -149,15 +103,14 @@ public class EnemyController : MonoBehaviour {
 			// If player moves out of look radius...
 			if (distanceToTarget > enemy.lookRadius) {
 				// ...set state to Patrol
-				currentState = State.Patrol;
+				currentState = State.Idle;
 			}
 			break;
 
 		case State.Dead:
 			// Remove all AI functionalities and colliders
 			this.GetComponent<NavMeshAgent> ().enabled = false;
-			this.GetComponent<CapsuleCollider> ().enabled = false;
-
+			this.GetComponent<BoxCollider> ().enabled = false;
 
 			// If the enemy should be sinking...
 			if (enemyHealth.isSinking) { 
@@ -172,6 +125,19 @@ public class EnemyController : MonoBehaviour {
 
 			break;
 		}
+	}
+
+	// Creds: Unityblog user: MysterySoftware
+	public static Vector3 RandomNavSphere (Vector3 origin, float distance, int layermask) {
+		Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * distance;
+
+		randomDirection += origin;
+
+		NavMeshHit navHit;
+
+		NavMesh.SamplePosition (randomDirection, out navHit, distance, layermask);
+
+		return navHit.position;
 	}
 
 	void DestroyOnDeath(){

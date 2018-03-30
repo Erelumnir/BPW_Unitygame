@@ -36,8 +36,11 @@ public class PlayerHealth : MonoBehaviour {
 
 		// Adjust UI to match currHP
 		UI_HP.text = currHP.ToString();
+
+		if (currHP > 100) {
+			currHP = 100;
+		}
 	}
-		
 
 	public void TakeDamage (int amount){
 

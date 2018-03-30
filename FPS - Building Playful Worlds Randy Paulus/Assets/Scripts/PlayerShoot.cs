@@ -22,15 +22,12 @@ public class PlayerShoot : MonoBehaviour {
 			Debug.LogError("PlayerShoot: No camera referenced!");
 			this.enabled = false;
 		}
-
-
 	}
 
 	void Update(){
-
 		//Fire
-		if (Input.GetButton("Fire1") && Time.time > weapon.nextShot) {
-			Shoot();
+		if (Input.GetButton ("Fire1") && Time.time > weapon.nextShot) {
+			Shoot ();
 		}
 	}
 
@@ -59,7 +56,7 @@ public class PlayerShoot : MonoBehaviour {
 
 					//...enemy takes damage. 
 					enemyHealth.TakeDamage (weapon.GetRandomDamage());
-					Debug.Log ("You hit for: " + weapon.GetRandomDamage());
+					//Debug.Log ("You hit for: " + weapon.GetRandomDamage());
 					//Debug.Log ("Health Left: " + enemyHealth.currHP);
 				}
 			} 
